@@ -1,6 +1,13 @@
 #!/bin/bash
 set -eu
 
+# Set up Java environment
+export JAVA_HOME=$(dirname $(dirname $(which java)))
+export PATH=$JAVA_HOME/bin:$PATH
+
+# Verify Java is available
+java -version
+
 # Move into the Spring Boot app directory
 cd demo
 
