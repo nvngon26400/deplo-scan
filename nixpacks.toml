@@ -2,14 +2,7 @@
 nixPkgs = ["openjdk17", "gradle"]
 
 [phases.build]
-cmds = [
-  "export JAVA_HOME=$(dirname $(dirname $(which java)))",
-  "export PATH=$JAVA_HOME/bin:$PATH",
-  "chmod +x start.sh"
-]
-
-[variables]
-JAVA_HOME = "$(dirname $(dirname $(which java)))"
+cmds = ["chmod +x start.sh"]
 
 [start]
-cmd = "export JAVA_HOME=$(dirname $(dirname $(which java))) && export PATH=$JAVA_HOME/bin:$PATH && ./start.sh"
+cmd = "./start.sh"

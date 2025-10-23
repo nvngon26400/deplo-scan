@@ -1,12 +1,19 @@
 #!/bin/bash
 set -eu
 
-# Set up Java environment
-export JAVA_HOME=$(dirname $(dirname $(which java)))
-export PATH=$JAVA_HOME/bin:$PATH
+# Resolve Java binary reliably in Nixpacks
+JAVA_BIN="/nix/var/nix/profiles/default/bin/java"
+if [ ! -x "$JAVA_BIN" ]; then
+  JAVA_BIN=$(command -v java || true)
+fi
+if [ -z "${JAVA_BIN:-}" ]; then
+  echo "Java binary not found. Listing /nix/var/nix/profiles/default/bin:" >&2
+  ls -la /nix/var/nix/profiles/default/bin || true
+  exit 1
+fi
 
 # Verify Java is available
-java -version
+"$JAVA_BIN" -version || true
 
 # Move into the Spring Boot app directory
 cd demo
@@ -26,4 +33,4 @@ if [ -z "${JAR_FILE:-}" ]; then
 fi
 
 # Run the app binding to Railway's PORT if provided
-exec java -jar "$JAR_FILE"
+exec "$JAVA_BIN" -jar "$JAR_FILE"
