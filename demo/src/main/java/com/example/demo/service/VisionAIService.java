@@ -67,7 +67,7 @@ public class VisionAIService {
 
     private Map<String, Object> createVisionRequest(String base64Image) {
         // Create a request map with the model set to GPT-4 Vision
-        Map<String, Object> request = new HashMap<>(Map.of("model", "gpt-4-vision-preview"));
+        Map<String, Object> request = new HashMap<>(Map.of("model", "gpt-4o"));
 
         // Create a message map with the role set to "user"
         Map<String, Object> message = new HashMap<>(Map.of("role", "user"));

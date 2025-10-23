@@ -61,14 +61,10 @@ public class AssetRestController {
 
     @PostMapping("/assets/capture")
     public ResponseEntity<Map<String, Object>> captureAsset(
-            @RequestParam("imageFile") MultipartFile imageFile,
-            @RequestParam("auditorName") String auditorName,
-            @RequestParam(value = "latitude", required = false) Double latitude,
-            @RequestParam(value = "longitude", required = false) Double longitude) {
+            @RequestParam("imageFile") MultipartFile imageFile) {
 
         try {
-            Asset asset = auditService.processAssetImage(
-                    imageFile, auditorName, latitude, longitude);
+            Asset asset = auditService.processAssetImage(imageFile);
 
             Map<String, Object> response = new HashMap<>();
             response.put("success", true);

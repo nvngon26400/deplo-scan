@@ -69,10 +69,7 @@ public class AuditService {
         return auditRepository.save(audit);
     }
 
-    public Asset processAssetImage(MultipartFile imageFile,
-                                   String auditorName,
-                                   Double latitude,
-                                   Double longitude) throws java.io.IOException {
+    public Asset processAssetImage(MultipartFile imageFile) throws java.io.IOException {
 
         // Analyze image with Vision AI
         String aiAnalysis = visionAIService.analyzeAssetImage(imageFile);
@@ -81,13 +78,7 @@ public class AuditService {
         // Save image as evidence
         String imagePath = assetService.saveAssetImage(imageFile);
 
-        // Create or update asset
-        Asset asset = assetService.createOrUpdateAsset(analysisResult, imagePath, latitude, longitude);
-
-        // Create initial audit record
-        createInitialAudit(asset, auditorName, aiAnalysis, imagePath, latitude, longitude);
-
-        return asset;
+        return new Asset();
     }
 
     public void createInitialAudit(Asset asset,
