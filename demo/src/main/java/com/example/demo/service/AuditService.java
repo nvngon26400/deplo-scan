@@ -2,6 +2,7 @@ package com.example.demo.service;
 
 import com.example.demo.entity.Asset;
 import com.example.demo.entity.Audit;
+import com.example.demo.exception.BarcodeNotDetectException;
 import com.example.demo.repository.AssetRepository;
 import com.example.demo.repository.AuditRepository;
 import lombok.extern.slf4j.Slf4j;
@@ -73,6 +74,10 @@ public class AuditService {
 
         // Analyze image with Vision AI
         String aiAnalysis = visionAIService.analyzeAssetImage(imageFile);
+
+        if (aiAnalysis.equals("null")) {
+            throw new BarcodeNotDetectException("Cannot detect barcode");
+        }
 
         // Save image as evidence
         String imagePath = assetService.saveAssetImage(imageFile);
