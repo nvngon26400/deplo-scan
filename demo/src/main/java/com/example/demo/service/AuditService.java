@@ -81,7 +81,11 @@ public class AuditService {
 
         // Save image as evidence
         String imagePath = assetService.saveAssetImage(imageFile);
-        return this.assetRepository.findByBarcode(aiAnalysis);
+        Asset asset = this.assetRepository.findByBarcode(aiAnalysis);
+        if (asset == null) {
+            throw new BarcodeNotDetectException("Asset with barcode " + aiAnalysis + " not found");
+        }
+        return asset;
     }
 
     public void createInitialAudit(Asset asset,

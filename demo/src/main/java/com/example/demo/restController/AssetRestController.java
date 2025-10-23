@@ -45,11 +45,6 @@ public class AssetRestController {
     public ResponseEntity<?> captureAsset(
             @RequestParam("imageFile") MultipartFile imageFile) throws IOException {
         Asset asset = auditService.processAssetImage(imageFile);
-
-        if (asset == null) {
-            throw new ResourceNotFoundException("This asset does not exist");
-        }
-
         return ResponseEntity.ok(asset);
     }
 
