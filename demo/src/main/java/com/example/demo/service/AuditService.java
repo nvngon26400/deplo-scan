@@ -73,12 +73,10 @@ public class AuditService {
 
         // Analyze image with Vision AI
         String aiAnalysis = visionAIService.analyzeAssetImage(imageFile);
-        Map<String, Object> analysisResult = visionAIService.parseAnalysisResult(aiAnalysis);
 
         // Save image as evidence
         String imagePath = assetService.saveAssetImage(imageFile);
-
-        return new Asset();
+        return this.assetRepository.findByBarcode(aiAnalysis);
     }
 
     public void createInitialAudit(Asset asset,

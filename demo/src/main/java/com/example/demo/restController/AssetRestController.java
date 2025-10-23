@@ -1,6 +1,7 @@
 package com.example.demo.restController;
 
 import com.example.demo.entity.Asset;
+import com.example.demo.exception.ResourceNotFoundException;
 import com.example.demo.service.AssetService;
 import com.example.demo.service.AuditService;
 import lombok.extern.slf4j.Slf4j;
@@ -17,7 +18,7 @@ import java.util.List;
 import java.util.Map;
 
 @RestController
-@RequestMapping("/api")
+@RequestMapping("v1/api/assets")
 @Slf4j
 public class AssetRestController {
 
@@ -29,25 +30,35 @@ public class AssetRestController {
         this.auditService = auditService;
     }
 
-    @GetMapping("/assets")
+    @GetMapping()
     public ResponseEntity<List<Asset>> getAllAssets() {
         return ResponseEntity.ok(assetService.getAllAssets());
     }
 
-    // Audit APIs đã được chuyển sang AuditRestController
-
-    @GetMapping("/assets/{barcode}")
+    @GetMapping("/{barcode}")
     public ResponseEntity<Asset> getAssetByBarcode(@PathVariable String barcode) {
         Asset asset = assetService.getAssetByBarcode(barcode);
         return ResponseEntity.ok(asset);
     }
 
-    @GetMapping("/assets/department/{department}")
+    @PostMapping("/capture")
+    public ResponseEntity<?> captureAsset(
+            @RequestParam("imageFile") MultipartFile imageFile) throws IOException {
+        Asset asset = auditService.processAssetImage(imageFile);
+
+        if (asset == null) {
+            throw new ResourceNotFoundException("This asset does not exist");
+        }
+
+        return ResponseEntity.ok(asset);
+    }
+
+    @GetMapping("/department/{department}")
     public ResponseEntity<List<Asset>> getAssetsByDepartment(@PathVariable String department) {
         return ResponseEntity.ok(assetService.getAssetsByDepartment(department));
     }
 
-    @GetMapping("/images/assets/{filename:.+}")
+    @GetMapping("/images/{filename:.+}")
     public ResponseEntity<byte[]> getAssetImage(@PathVariable String filename) {
         try {
             byte[] imageBytes = assetService.getAssetImage(filename);
@@ -56,30 +67,6 @@ public class AssetRestController {
             return new ResponseEntity<>(imageBytes, headers, HttpStatus.OK);
         } catch (IOException e) {
             return ResponseEntity.notFound().build();
-        }
-    }
-
-    @PostMapping("/assets/capture")
-    public ResponseEntity<Map<String, Object>> captureAsset(
-            @RequestParam("imageFile") MultipartFile imageFile) {
-
-        try {
-            Asset asset = auditService.processAssetImage(imageFile);
-
-            Map<String, Object> response = new HashMap<>();
-            response.put("success", true);
-            response.put("message", "Asset captured successfully!");
-            response.put("assetId", asset.getId());
-            response.put("deviceNumber", asset.getDeviceNumber());
-
-            return ResponseEntity.ok(response);
-
-        } catch (Exception e) {
-            Map<String, Object> response = new HashMap<>();
-            response.put("success", false);
-            response.put("message", "Failed to capture asset: " + e.getMessage());
-
-            return ResponseEntity.badRequest().body(response);
         }
     }
 }

@@ -75,7 +75,7 @@ public class VisionAIService {
         // Create a content map for the text prompt
         Map<String, Object> content = new HashMap<>();
         content.put("type", "text"); // Specify the content type as text
-        content.put("text", "Please read the text directly below the barcode in this image and return only that plain text"); // Instruction for the model
+        content.put("text", "Please read the text directly below the barcode in this image and return only that plain text. If can not read, return 'null'"); // Instruction for the model
 
         // Create a content map for the image input
         Map<String, Object> imageContent = new HashMap<>();
