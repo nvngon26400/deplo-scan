@@ -53,8 +53,7 @@ public class AssetAuditController {
                                       @RequestParam(value = "longitude", required = false) Double longitude,
                                       Model model) throws UnsupportedEncodingException {
         try {
-            Asset asset = auditService.processAssetImage(
-                    imageFile, auditorName, latitude, longitude);
+            Asset asset = auditService.processAssetImage(imageFile);
 
             model.addAttribute("asset", asset);
             model.addAttribute("message", "Asset captured successfully! Device Number: " + asset.getDeviceNumber());
